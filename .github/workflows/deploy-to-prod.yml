@@ -1,0 +1,37 @@
+name: Deploy Angular SSR App
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - run: echo "Copy project files to VPS"
+      - name: Copy project to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
+          source: "."
+          target: "~/apps/jastfitfrontend"
+
+      - run: echo "Deploy to VPS via SSH"
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
+          script: |
+            cd ~/apps/jastfitfrontend
+            docker stop jastfitfrontend || true
+            docker rm jastfitfrontend || true
+            docker build -t jastfitfrontend .
+            docker run -d --name jastfitfrontend -p 3000:3000 --restart always jastfitfrontend

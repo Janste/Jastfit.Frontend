@@ -1,0 +1,9 @@
+<div class="container" style="padding-top: 1.5rem; padding-bottom: 3rem">
+  <p>calculator works!</p>
+
+  <ul>
+    @for (product of foodProducts(); track $index) {
+    <li>{{ product.name }}</li>
+    }
+  </ul>
+</div>
