@@ -9,4 +9,4 @@ FROM node:24.12
 WORKDIR /usr/app
 COPY --from=build /app/src/dist/Jastfit.Frontend ./
 CMD node server/server.mjs
-EXPOSE 4000
+EXPOSE 3000
